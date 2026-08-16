@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import mysql from 'mysql2';
+import db from './db.js';
 import eventsRouter from './routes/events.js';
 import bookingsRouter from './routes/bookings.js';
 
@@ -8,26 +8,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Database Connection
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
-  connectTimeout: 30000,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-connection.connect((err) => {
-  if (err) {
-    console.error('❌ Detailed Database connection error:', err);
-    return;
-  }
+// Test Database Connection on Startup
+try {
+  const connection = await db.getConnection();
   console.log('✅ Connected to MySQL Database successfully!');
-});
+  connection.release();
+} catch (err) {
+  console.error('❌ Detailed Database connection error:', err);
+}
 
 // Routes
 app.use('/api/events', eventsRouter);
