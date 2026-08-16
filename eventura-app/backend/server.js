@@ -1,4 +1,4 @@
-import mysql from 'mysql2'; // or 'mysql' depending on what you installed
+import mysql from 'mysql2';
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 
 connection.connect((err) => {
   if (err) {
-    console.error('❌ Database connection failed:', err.message);
+    console.error('❌ Detailed Database connection error:', err); // Prints full error details
     return;
   }
   console.log('✅ Connected to MySQL Database successfully!');
